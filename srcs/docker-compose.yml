@@ -1,36 +1,62 @@
-version: "3.7"
+verson: "3.7"
 
 services:
   nginx:
     build:
-      context: ./nginx/
-      dockerfile: Dockerfile
+      context: ./srcs/requirements/nginx
+      dockerfile: ./Dockerfile
     depends_on:
       - wordpress
     volumes:
-      - ./nginx_data:/var/www/html
+      - ./wordpress_data:/var/www/html
     ports:
-      - 443:443
-
-      
+      - "443:443"
+    networks:
+      - intra
+    env_file:
+      - .env
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress_user
-      MYSQL_PASSWORD: 123456
 
-  app:
+  wordpress:
+    build:
+      context: ./srcs/requirements/wordpress
+      dockerfile: ./Dockerfile
     depends_on:
-      - db
-    image: wordpress:latest
+      - mariadb
     volumes:
-      - ./app_data:/var/www/html
-    ports:
-      - "8080:80"
+      - ./wordpress_data:/var/www/html
+    networks:
+      - intra
+    env_file:
+      - .env
     restart: always
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_NAME: wordpress 
-      WORDPRESS_DB_USER: wordpress_user
-      WORDPRESS_DB_PASSWORD: 123456
+
+  mariadb:
+    build:
+      context: ./srcs/requirements/mariadb
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+    networks:
+      - intra
+    env_file:
+      - .env
+    restart: always
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $HOME/$USER/data/wordpress_data
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $HOME/$USER/data/mariadb_data
+
+networks:
+  intra:
+    driver: bridge
