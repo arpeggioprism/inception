@@ -2,6 +2,8 @@ COMPOSE = docker-compose
 YML = ./srcs/docker-compose.yml
 
 all:
+	mkdir -p ${HOME}/data/wordpress
+	mkdir -p ${HOME}/data/mariadb
 	$(COMPOSE) -f $(YML) up --build
 
 up:
@@ -24,7 +26,7 @@ clean:
 
 fclean:
 	make clean
-	rm -rf ${HOME}/${USER}/data
+	rm -rf ${HOME}/data
 
 re:
 	make fclean

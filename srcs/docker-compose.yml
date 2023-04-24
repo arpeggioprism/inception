@@ -1,4 +1,4 @@
-verson: "3"
+version: "3"
 
 services:
   nginx:
@@ -8,7 +8,7 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - ./wordpress_data:/var/www/html
+      - $HOME/data/wordpress_db:/var/www/html
     ports:
       - "443:443"
     networks:
@@ -24,7 +24,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - ./wordpress_data:/var/www/html
+      - $HOME/data/wordpress_db:/var/www/html
     networks:
       - intra
     env_file:
@@ -35,91 +35,28 @@ services:
     build:
       context: ./requirements/mariadb
       dockerfile: ./Dockerfile
-    volumes:
-      - ./mariadb_data:/var/lib/mysql
     networks:
       - intra
+    volumes:
+      - $HOME/data/mariadb_db:/var/lib/mysql
     env_file:
       - .env
     restart: always
 
-volumes:
-  wordpress_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: $HOME/$USER/data/wordpress_data
-  mariadb_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: $HOME/$USER/data/mariadb_data
+# volumes:
+#   wordpress_db:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: $HOME/data/wordpress
+#   mariadb_db:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: $HOME/data/mariadb
 
 networks:
   intra:
     driver: bridge
-
-  # ftp:
-  #   container_name: ftp
-  #   build: ./requirements/bonus/ftp/.
-  #   image: ftp:42
-  #   depends_on:
-  #     - wordpress
-  #   volumes:
-  #     - wordpress:/home/sami/ftp/files
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - "21:21"
-  #     - "20:20"
-  #     - "40000-40005:40000-40005"
-  #   networks:
-  #     - inception
-  #   restart: always
-  # adminer:
-  #   container_name: adminer
-  #   build: ./requirements/bonus/adminer/.
-  #   image: adminer:42
-  #   depends_on:
-  #     - mariadb
-  #   ports:
-  #     - "600:80"
-  #   networks:
-  #     - inception
-  #   restart: always
-  # redis:
-  #   container_name: redis
-  #   build: ./requirements/bonus/redis/.
-  #   image: redis:42
-  #   volumes:
-  #    - wordpress:/var/www/html
-  #   depends_on:
-  #     - wordpress
-  #   networks:
-  #     - inception
-  #   restart: always
-  # website:
-  #   container_name: website
-  #   build: ./requirements/bonus/websites/.
-  #   image: website:42
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - inception
-  #   restart: always
-  # cadvisor:
-  #   container_name: cadvisor
-  #   build: ./requirements/bonus/cadvisor/.
-  #   image: cadvisor:42
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - inception
-  #   volumes:
-  #     - /:/rootfs:ro
-  #     - /var/run:/var/run:ro 
-  #     - /sys:/sys:ro 
-  #     - /var/lib/docker/:/var/lib/docker:ro
-  #   restart: always
