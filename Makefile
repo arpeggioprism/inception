@@ -1,35 +1,34 @@
-COMPOSE = docker-compose
-YML = ./srcs/docker-compose.yml
-
+name = inception
 all:
-	mkdir -p ${HOME}/data/wordpress
-	mkdir -p ${HOME}/data/mariadb
-	$(COMPOSE) -f $(YML) up --build
+	@mkdir -p ~/data/wordpress
+	@mkdir -p ~/data/mariadb
+	@printf "Launch configuration ${name}...\n"
+	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env up -d
 
-up:
-	$(COMPOSE) -f $(YML) up
+build:
+	@mkdir -p ~/data/wordpress
+	@mkdir -p ~/data/mariadb
+	@printf "Building configuration ${name}...\n"
+	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env up -d --build
 
 down:
-	$(COMPOSE) -f $(YML) down
+	@printf "Stopping configuration ${name}...\n"
+	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env down
 
-start :
-	$(COMPOSE) -f $(YML) start
+re: down
+	@printf "Rebuild configuration ${name}...\n"
+	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env up -d --build
 
-stop :
-	$(COMPOSE) -f $(YML) stop
-
-status :
-	docker ps
-
-clean:
-	$(COMPOSE) -f $(YML) down --rmi all --volumes
+clean: down
+	@printf "Cleaning configuration ${name}...\n"
+	@docker system prune -a
 
 fclean:
-	make clean
-	rm -rf ${HOME}/data
+	@printf "Total clean of all configurations docker\n"
+	@docker stop $$(docker ps -qa)
+	@docker system prune --all --force --volumes
+	@docker network prune --force
+	@docker volume prune --force
+	@sudo rm -rf ~/data
 
-re:
-	make fclean
-	make all
-
-.PHONY: all clean fclean re
+.PHONY	: all build down re clean fclean

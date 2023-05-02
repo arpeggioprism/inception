@@ -1,12 +1,19 @@
 FROM alpine:3.16
 
+
+
+RUN  apk update && apk upgrade && apk add --no-cache nginx && \
+     apk add openssl && \
+     mkdir -p /etc/nginx/ssl && \
+     openssl req -x509 -nodes \
+     -days 365 \
+     -newkey rsa:2048 \
+     -keyout /etc/nginx/ssl/jshin.42.fr.key \
+     -out /etc/nginx/ssl/jshin.42.fr.crt \
+     -subj "/C=KR/ST=Seoul/O=42Seoul/OU=jshin/CN=inception/" &&\
+     chown nginx /etc/nginx/ssl/jshin.42.fr.crt && \
+     chown nginx /etc/nginx/ssl/jshin.42.fr.key
+
 EXPOSE 443
-RUN apk update && \
-    apk upgrade && \
-    apk add nginx openssl curl iputils && \
-	mkdir -p /etc/ssl
 
-COPY config/default.conf /etc/nginx/http.d/default.conf
-COPY script/nginx.sh /tmp/nginx.sh
-
-CMD ["/bin/sh", "/tmp/nginx.sh"]
+CMD ["nginx", "-g", "daemon off;"]
