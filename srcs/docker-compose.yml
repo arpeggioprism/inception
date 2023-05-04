@@ -107,7 +107,7 @@ services:
     container_name: website
     image: website
     ports:
-      - "80:80"
+      - "1000:1000"
     restart: always
 
   flask:
