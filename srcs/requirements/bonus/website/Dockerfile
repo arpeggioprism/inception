@@ -7,7 +7,7 @@ RUN apk update && apk upgrade && apk add --no-cache nginx && \
     echo "    try_files \$uri /index.html;" >> /etc/nginx/http.d/default.conf && \
     echo "}}" >> /etc/nginx/http.d/default.conf
 
-COPY requirements/bonus/website/conf/* /var/www/html
+COPY requirements/bonus/website/conf/* /var/www/html/
 
 EXPOSE 80
 

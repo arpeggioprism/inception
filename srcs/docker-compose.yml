@@ -110,6 +110,17 @@ services:
       - "80:80"
     restart: always
 
+  flask:
+    build:
+      context: .
+      dockerfile: requirements/bonus/flask/Dockerfile
+    container_name: flask
+    image: flask
+    ports:
+      - "5000:5000"
+    restart: always
+
+
 volumes:
   wp-volume:
     driver_opts:
