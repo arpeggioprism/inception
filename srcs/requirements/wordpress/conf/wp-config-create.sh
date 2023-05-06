@@ -1,10 +1,5 @@
 #!bin/sh
 #!/bin/bash
-if [ ! -d "/home/${USER}/data" ]; then
-        mkdir ~/data
-        mkdir ~/data/mariadb
-        mkdir ~/data/wordpress
-fi
 
 if [ ! -f "/var/www/html/wp-config.php" ]; then
 cat << EOF > /var/www/html/wp-config.php
