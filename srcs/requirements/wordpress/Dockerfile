@@ -33,7 +33,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
     sed -i "s|;listen.group = nobody|listen.group = nobody|g" \
       /etc/php${PHP_VERSION}/php-fpm.d/www.conf && \
     sed -i "s|;clear_env = no|clear_env = no|g" \
-      /etc/php8/php-fpm.d/www.conf && \
+      /etc/php${PHP_VERSION}/php-fpm.d/www.conf && \
     rm -f /var/cache/apk/*
 
 EXPOSE 9000
