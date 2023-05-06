@@ -36,6 +36,8 @@ RUN apk update && apk upgrade && apk add --no-cache \
       /etc/php8/php-fpm.d/www.conf && \
     rm -f /var/cache/apk/*
 
+EXPOSE 9000
+
 WORKDIR /var/www/html
 
 
